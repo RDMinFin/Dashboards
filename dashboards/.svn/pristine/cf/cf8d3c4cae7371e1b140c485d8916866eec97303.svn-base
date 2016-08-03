@@ -1,0 +1,62 @@
+/**
+ * 
+ */
+
+angular.module('metasController',['dashboards']).controller('metasController',['$scope','$routeParams','$http',
+	   function($scope,$routeParams,$http){
+			
+			this.show_rows=[false];
+			this.lastupdate;
+			this.metas_entidades;
+			this.original_metas_entidades;
+			this.metas_metas;
+			this.original_metas_metas;
+			
+			this.totales_entidades=[0.0,0.0,0.0,0.0,0.0,0.0];
+			this.totales_metas=[0.0,0.0,0.0,0.0,0.0,0.0];
+			
+			$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria' }).then(function(response){
+			    if(response.data.success){
+			    	this.lastupdate = response.data.lastupdate;
+				}
+			}.bind(this), function errorCallback(response){
+		 		
+			 });
+			
+			
+			$http.post('/SMetas', { action: 'getMetasEntidades', mes: 7 }).then(function(response){
+			    if(response.data.success){
+			    	this.original_metas_entidades = response.data.metas;
+			    	this.metas_entidades = this.original_metas_entidades.length> 0 ? this.original_metas_entidades.slice(0) : [];
+			    	for(var i=0; i<response.data.metas.length; i++){
+			    		this.totales_entidades[0]+=response.data.metas[i].asignado;
+			    		this.totales_entidades[1]+=response.data.metas[i].modificaciones;
+			    		this.totales_entidades[2]+=response.data.metas[i].vigente;
+			    		this.totales_entidades[3]+=response.data.metas[i].gasto;
+			    		this.totales_entidades[4]+=response.data.metas[i].avance;
+			    		this.totales_entidades[5]+=response.data.metas[i].meta;
+			    	}
+				}
+			}.bind(this), function errorCallback(response){
+		 		
+			 });
+			
+			$http.post('/SMetas', { action: 'getMetasMetas', mes: 7 }).then(function(response){
+			    if(response.data.success){
+			    	this.original_metas_metas = response.data.metas;
+			    	this.metas_metas = this.original_metas_metas.length> 0 ? this.original_metas_metas.slice(0) : [];
+			    	for(var i=0; i<response.data.metas.length; i++){
+			    		this.totales_metas[0]+=response.data.metas[i].asignado;
+			    		this.totales_metas[1]+=response.data.metas[i].modificaciones;
+			    		this.totales_metas[2]+=response.data.metas[i].vigente;
+			    		this.totales_metas[3]+=response.data.metas[i].gasto;
+			    		this.totales_metas[4]+=response.data.metas[i].avance;
+			    		this.totales_metas[5]+=response.data.metas[i].meta;
+			    	}
+				}
+			}.bind(this), function errorCallback(response){
+		 		
+			 });
+			
+		}
+	]);
