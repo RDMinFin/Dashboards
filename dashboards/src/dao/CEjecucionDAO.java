@@ -18,7 +18,8 @@ public class CEjecucionDAO {
 		if(CDatabase.connect()){
 			Connection conn = CDatabase.getConnection();
 			try{
-				DateTime now = new DateTime();
+				DateTime now = new DateTime();    
+				
 				PreparedStatement pstm1 =  conn.prepareStatement("select e.entidad, e.nombre, "+
 					"SUM(CASE WHEN (g.ejercicio=?-5 AND g.mes=?) THEN g.total ELSE 0 END) ejecutado_1, "+
 					"SUM(CASE WHEN (g.ejercicio=?-4 AND g.mes=?) THEN g.total ELSE 0 END) ejecutado_2, "+
