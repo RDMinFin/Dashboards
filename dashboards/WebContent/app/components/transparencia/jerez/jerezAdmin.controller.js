@@ -1,34 +1,10 @@
-angular.module('jerezAdminController',['dashboards','smart-table','ngFileUpload']).controller('adminCtrl',['$scope','$rootScope','$routeParams','$http','$uibModal','uiGmapGoogleMapApi','Upload','$timeout',
- function($scope,$rootScope,$routeParams,$http,$uibModal,uiGmapGoogleMapApi,Upload,$timeout){
-	this.id=-1;
-	this.nombre="";
-	this.descripcion="";
-	this.fecha_inicio;
-	this.fecha_fin;
-	this.entidades="";
-	this.porcentaje_ejecucion = 0.0;
-    $rootScope.coord_lat;
-    $rootScope.coord_long;
-        
-    this.entidad="";
-    this.unidad_ejecutora="";
-    this.programa="";
-    this.subprograma="";
-    this.proyecto="";
-    this.actividad="";
-    this.obra="";
- 
-    this.responsable_nombre="";
-    this.responsable_correo="";
-    this.responsable_telefono="";
-    
-    this.showloading = false;
-    this.activityType = 1; //1 : presupuestaria - 2 : coordinacion 
+angular.module('jerezAdminController',['dashboards','smart-table','ngFileUpload','ui.bootstrap',]);
+angular.module('jerezAdminController').controller('adminCtrl', function($log,$scope,$rootScope,$routeParams,$http,$uibModal,$route){
+	
+    this.showloading = false;  
     this.actividades_data = [];
     this.actividades_data_original=[];
-    
-    this.docFile = null;
-            
+  
 	this.loadList=function(){
 		this.showloading=true;
 		$http.post('/SSaveActividad', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
@@ -43,185 +19,266 @@ angular.module('jerezAdminController',['dashboards','smart-table','ngFileUpload'
 	}
 	
 	this.select=function(index){	
-		this.id =this.actividades_data[index].id;
-		this.nombre=this.actividades_data[index].nombre;
-		this.descripcion=this.actividades_data[index].descripcion;
-		this.fecha_inicio =  moment(this.actividades_data[index].fecha_inicio,"DD/MM/YYYY HH:mm a").toDate();
-		this.fecha_fin =  moment(this.actividades_data[index].fecha_fin,"DD/MM/YYYY HH:mm a").toDate();
-		this.entidades=this.actividades_data[index].entidades;
-		this.porcentaje_ejecucion = this.actividades_data[index].porcentaje_ejecucion;
+		$rootScope.id =this.actividades_data[index].id;
+		$rootScope.nombre=this.actividades_data[index].nombre;
+		$rootScope.descripcion=this.actividades_data[index].descripcion;
+		$rootScope.fecha_inicio =  moment(this.actividades_data[index].fecha_inicio,"DD/MM/YYYY HH:mm a").toDate();
+		$rootScope.fecha_fin =  moment(this.actividades_data[index].fecha_fin,"DD/MM/YYYY HH:mm a").toDate();
+		$rootScope.entidades=this.actividades_data[index].entidades;
+		$rootScope.porcentaje_ejecucion = this.actividades_data[index].porcentaje_ejecucion;
 		$rootScope.coord_lat=this.actividades_data[index].latitude;
-		$rootScope.coord_long=this.actividades_data[index].longitude;	    
-	    this.responsable_id=this.actividades_data[index].responsable_id;
-	    this.responsable_nombre=this.actividades_data[index].responsable_nombre;
-	    this.responsable_correo=this.actividades_data[index].responsable_correo;
-	    this.responsable_telefono=this.actividades_data[index].responsable_telefono;
-	    
-	    if (this.actividades_data[index].entidad>0)
-	    	this.activityType = 1;
-    	else 
-	    	this.activityType = 2;
-   
+		$rootScope.coord_long=this.actividades_data[index].longitude;	
+		$rootScope.coord = "(" + $rootScope.coord_lat +", "+ $rootScope.coord_long + ")";
+		$rootScope.responsable_id=this.actividades_data[index].responsable_id;
+		$rootScope.responsable_nombre=this.actividades_data[index].responsable_nombre;
+		$rootScope.responsable_correo=this.actividades_data[index].responsable_correo;
+		$rootScope.responsable_telefono=this.actividades_data[index].responsable_telefono;
+		$rootScope.edit = false;
+		 
+		 var modalInstance = $uibModal.open({
+		      animation: true,
+		      keyboard:false,
+		      backdrop:'static',
+		      scope:$scope,
+		      templateUrl: 'edit.html',
+		      controller: 'editActivity',
+		 });
+		 
+		 modalInstance.result.then(function() {
+			 $route.reload();
+		}, function() {
+
+		})['finally'](function(){
+			modalInstance = undefined  // <--- This fixes
+			$scope.render=false;
+		});
+ 
 	}
     
-    this.save=function(){	     	
-    	if (this.id <= 0) {
-    	var tsFI= Math.floor(this.fecha_inicio / 1 );
-	 	var tsFF= Math.floor(this.fecha_fin / 1 );
-	 		
-		 var data = { action:"create", nombre: this.nombre, descripcion: this.descripcion, fecha_inicio:tsFI, fecha_fin:tsFF,
-				 	entidades: this.entidades, porcentaje_ejecucion:this.porcentaje_ejecucion, coord_lat:$rootScope.coord_lat, coord_long:$rootScope.coord_long,
-				 	responsable_nombre:this.responsable_nombre, responsable_correo:this.responsable_correo, responsable_telefono:this.responsable_telefono,programa:this.programa,subprograma:this.subprograma};
-		 $http.post('/SSaveActividad', data).then(function(response){
-			    if(response.data.success)
-			    	this.loadList();
-			    else
-			    	window.alert("error");
-		 	}.bind(this), function errorCallback(response){
-		 		$scope.showerror = true;
-		 	}
-		 );		
-		 this.clear();
-    	}else{
-    		this.update();
-    	}    	
-	 }
-	 
-	 this.update=function(){
-		 var tsFI= Math.floor(this.fecha_inicio / 1 );
-		 var tsFF= Math.floor(this.fecha_fin / 1 );
-		 var data = { action:"update", id:this.id, nombre:this.nombre, descripcion:this.descripcion, coord_lat:$rootScope.coord_lat, coord_long:$rootScope.coord_long,
-				 		porcentaje_ejecucion:this.porcentaje_ejecucion, fecha_inicio:tsFI, fecha_fin:tsFF, entidades:this.entidades,
-				 		responsable_nombre:this.responsable_nombre, responsable_correo:this.responsable_correo, responsable_telefono:this.responsable_telefono, responsable_id:this.responsable_id};
-		 $http.post('/SSaveActividad', data).then(function(response){
-			    if(response.data.success){
-			    	this.loadList();
-			    }else
-			    	window.alert("error");
-		 	}.bind(this), function errorCallback(response){
-		 		$scope.showerror = true;
-		 	}
-		 );
-	 }
-	 
-	 this.erase=function(){
-		 var data = {action:"delete",id:this.id,responsable_id:this.responsable_id}
-		 $http.post('/SSaveActividad', data).then(function(response){
-			    if(response.data.success){
-			    	this.loadList();
-			    	this.clear();
-			    }else
-			    	window.alert("error");
-		 	}.bind(this), function errorCallback(response){
-		 		$scope.showerror = true;
-		 	}
-		 );
-	 }
-	 
-	 this.clear=function(){
-		this.id=-1;
-		this.nombre="";
-		this.descripcion="";
-		this.fecha_inicio=null;
-		this.fecha_fin=null;
-		this.entidades="";
-		this.porcentaje_ejecucion = 0.0;
+    this.addActivity = function () {
+    	$rootScope.id = -1;
+		 var modalInstance = $uibModal.open({
+		      animation: true,
+		      keyboard:false,
+		      backdrop:'static',
+		      scope:$scope,
+		      templateUrl: 'edit.html',
+		      controller: 'editActivity',
+		 });
+		 
+		 modalInstance.result.then(function () {
+			 $route.reload();
+		    }, function () {
+		    	
+		    });
+	 };	 
+});
+
+
+angular.module('jerezAdminController')
+.controller('editActivity', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload,$timeout) {
+	if ($rootScope.id<=0){
+		$rootScope.id=-1; 
+		$rootScope.nombre="";
+		$rootScope.descripcion="";
+		$rootScope.fecha_inicio=null;
+		$rootScope.fecha_fin=null;
+		$rootScope.entidades="";
+		$rootScope.porcentaje_ejecucion = 0.0;
 		$rootScope.coord_lat=null;
-		$rootScope.coord_long=null;	        
-	    this.entidad="";
-	    this.unidad_ejecutora="";
-	    this.programa="";
-	    this.subprograma="";
-	    this.proyecto="";
-	    this.actividad="";
-	    this.obra="";
-	    this.responsable_nombre="";
-	    this.responsable_correo="";
-	    this.responsable_telefono="";
-	    this.docFile = null
-	    this.activityType=2;
-	 }
-	 
-	 
-	 this.showMap = function () {
-	 var modalInstance = $uibModal.open({
-	      animation: true,
-	      scope:$rootScope,
-	      templateUrl: 'map.html',
-	      controller: 'mapCtrl'
-	    
-	    });
+		$rootScope.coord_long=null;	
+		$rootScope.coord="";
+		$rootScope.entidad="";
+		$rootScope.unidad_ejecutora="";
+		$rootScope.programa="";
+		$rootScope.subprograma="";
+		$rootScope.proyecto="";
+		$rootScope.actividad="";
+		$rootScope.obra="";
+		$rootScope.responsable_nombre="";
+		$rootScope.responsable_correo="";
+		$rootScope.responsable_telefono="";
+	}
+	$rootScope.docFile = null
+	$scope.activeTab=0;
+	
+	$scope.cancel = function () {
+		$rootScope.render=false;
+	    $uibModalInstance.dismiss('cancel');
+	};
+	
+	$http.post('/STransparenciaDocumentos', { action: 'getlist', id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
+	    if(response.data.success){
+	    	$scope.original_documentos = response.data.documentos;
+	    	$scope.documentos = $scope.original_documentos.length> 0 ? $scope.original_documentos.slice(0) : [];
+	    }
+ 	}.bind(this), function errorCallback(response){
+ 		
+ 	}
+	);
+	
+	 $scope.deleteDoc=function(idDoc){
+		 var data = {action:"delete",iddoc:idDoc}
+		 $http.post('/STransparenciaDocumentos', data).then(function(response){
+			    if(response.data.success){
+			    	$http.post('/STransparenciaDocumentos', { action: 'getlist', id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
+			    	    if(response.data.success){
+			    	    	$scope.original_documentos = response.data.documentos;
+			    	    	$scope.documentos = $scope.original_documentos.length> 0 ? $scope.original_documentos.slice(0) : [];
+			    	    }
+			     	}.bind(this), function errorCallback(response){
+			     		
+			     	}
+			    	);			    
+			    }else
+			    	window.alert("error");
+		 	}.bind(this), function errorCallback(response){
+		 		$scope.showerror = true;
+		 	}
+		) 
 	 };
 	
-	 this.uploadPic = function(file) {
-		file.upload = Upload.upload({
-		    url: '/SSaveFile',
-		    data: {id_actividad: this.id, place:"jerez", file: file},
-		  });
+	$scope.save=function(){	  
+		if ($rootScope.id>0)
+			$scope.update()
+		else{
+	    	var tsFI= Math.floor($rootScope.fecha_inicio / 1 );
+		 	var tsFF= Math.floor($rootScope.fecha_fin / 1 );
+		 	var data = { action:"create", nombre: $rootScope.nombre, descripcion: $rootScope.descripcion, fecha_inicio:tsFI, fecha_fin:tsFF,
+					 	entidades: $rootScope.entidades, porcentaje_ejecucion:$rootScope.porcentaje_ejecucion, coord_lat:$rootScope.coord_lat, coord_long:$rootScope.coord_long,
+					 	responsable_nombre:$rootScope.responsable_nombre, responsable_correo:$rootScope.responsable_correo, responsable_telefono:$rootScope.responsable_telefono,
+					 	programa:$rootScope.programa,subprograma:$rootScope.subprograma};
+			$http.post('/SSaveActividad', data).then(function(response){
+				    if(response.data.success){
+						$rootScope.render=false;
+				    	$uibModalInstance.close();
+				    }
+				    else
+				    	window.alert("error");
+			 	}.bind(this), function errorCallback(response){
+			 		$scope.showerror = true;
+			 	}
+			 );		
+		}
+	 }.bind($scope);
 		
-		 file.upload.then(function (response) {
-		    $timeout(function () {
-		      file.result = response.data;
-		    });
-		  }, function (response) {
-		    if (response.status > 0)
-		      this.errorMsg = response.status + ': ' + response.data;
-		  }, function (evt) {
-		    // Math.min is to fix IE which reports 200% sometimes
-		    file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-		  });
-	 }
+	$scope.update=function(){
+		 var tsFI= Math.floor($rootScope.fecha_inicio / 1 );
+		 var tsFF= Math.floor($rootScope.fecha_fin / 1 );
+		 var data = { action:"update", id:$rootScope.id, nombre:$rootScope.nombre, descripcion:$rootScope.descripcion, coord_lat:$rootScope.coord_lat, coord_long:$rootScope.coord_long,
+				 		porcentaje_ejecucion:$rootScope.porcentaje_ejecucion, fecha_inicio:tsFI, fecha_fin:tsFF, entidades:$rootScope.entidades,
+				 		responsable_nombre:$rootScope.responsable_nombre, responsable_correo:$rootScope.responsable_correo, responsable_telefono:$rootScope.responsable_telefono, responsable_id:$rootScope.responsable_id};
+		 $http.post('/SSaveActividad', data).then(function(response){
+			    if(response.data.success){
+					$rootScope.render=false;
+			    	$uibModalInstance.close();
+			    }else
+			    	window.alert("error");
+		 	}.bind(this), function errorCallback(response){
+		 		$scope.showerror = true;
+		 	}
+		 );
+	 }.bind($scope);
 	 
-}]);
+	 $scope.erase=function(){
+		 var data = {action:"delete",id:$rootScope.id,responsable_id:$rootScope.responsable_id}
+		 $http.post('/SSaveActividad', data).then(function(response){
+			    if(response.data.success){
+					$rootScope.render=false;
+			    	$uibModalInstance.close();
+			    }else
+			    	window.alert("error");
+		 	}.bind(this), function errorCallback(response){
+		 		$scope.showerror = true;
+		 	}
+		 );
+	 }.bind($scope);
 
-angular.module('jerezAdminController').controller('mapCtrl',[ '$scope','$rootScope','$uibModalInstance','$timeout', 'uiGmapGoogleMapApi',
-function ($scope,$rootScope, $uibModalInstance,$timeout, uiGmapGoogleMapApi) {
+ 
+	 $scope.uploadPic = function(file) {
+			file.upload = Upload.upload({
+			    url: '/SSaveFile',
+			    data: {id_actividad: this.id, place:"jerez", file: file},
+			  });
+			
+			 file.upload.then(function (response) {
+			    $timeout(function () {
+			      file.result = response.data;
+			      $rootScope.docFile=null;
+			      $http.post('/STransparenciaDocumentos', { action: 'getlist', id:$rootScope.id, t: (new Date()).getTime() }).then(function(response){
+			    	    if(response.data.success){
+			    	    	$scope.original_documentos = response.data.documentos;
+			    	    	$scope.documentos = $scope.original_documentos.length> 0 ? $scope.original_documentos.slice(0) : [];
+			    	    }
+			     	}.bind(this), function errorCallback(response){
+			     		
+			     	}
+			    	);	
+			    });
+			  }, function (response) {
+			    if (response.status > 0)
+			      this.errorMsg = response.status + ': ' + response.data;
+			  }, function (evt) {
+			    file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+			  });
+		 };	 
+	
+	uiGmapGoogleMapApi.then(function() {
+		$scope.map = { center: { latitude: '14.091376', longitude:'-89.766197' }, 
+					   zoom: 15,					   
+					   options: {
+						   streetViewControl: false,
+						   scrollwheel: true,
+						   mapTypeId: google.maps.MapTypeId.SATELLITE
+					   },
+					   refresh: true,
+					   clickedMarker: {
+					        id: 0,
+					        options:{
+					        },
+					        latitude:$scope.coord_lat,
+					        longitude:$scope.coord_long,
+					   },
+					   events: {
+						   click: function (mapModel, eventName, originalEventArgs) {
+					          var e = originalEventArgs[0];
+					          var lat = e.latLng.lat(),
+					              lon = e.latLng.lng();
+					          $scope.map.clickedMarker = {
+					            id: 0,
+					            options: {
+					            },
+					            latitude: lat,
+					            longitude: lon
+					          };
+					          $rootScope.coord_lat=lat;
+					          $rootScope.coord_long=lon;
+					          $rootScope.coord = "(" + $rootScope.coord_lat +", "+ $rootScope.coord_long + ")";
+					          $scope.activeTab=0;
+					          $scope.$digest();
+					        }					   
+					   }
+					   
+					};
+	  });
+	
+	uiGmapIsReady.promise().then(function(instances) {
+		 maps = instances[0].map;
+		 center = maps.getCenter();
+		 maps.setCenter(center);
+		 maps.setZoom(15);
+		 google.maps.event.trigger(maps,'resize');
+		 $log.info("YAAAAAAAAAAAAAAAaaa");
+     })
+     
 
-$scope.refreshMap = true;
+	$scope.changeTab = function(val){
+		$scope.activeTab = val;
+	    $rootScope.render=true;
 
-uiGmapGoogleMapApi.then(function() {
-	$scope.map = { center: { latitude: '14.091376', longitude:'-89.766197' }, 
-				   zoom: 15,
-				   height: 400,
-				   options: {
-					   streetViewControl: false,
-					   scrollwheel: true,
-					  mapTypeId: google.maps.MapTypeId.SATELLITE
-				   },
-				   refresh: true,
-				   clickedMarker: {
-				        id: 0,
-				        options:{
-				        },
-				        latitude:$rootScope.coord_lat,
-				        longitude:$rootScope.coord_long,
-				   },
-				   events: {
-					   click: function (mapModel, eventName, originalEventArgs) {
-				          var e = originalEventArgs[0];
-				          var lat = e.latLng.lat(),
-				              lon = e.latLng.lng();
-				          $scope.map.clickedMarker = {
-				            id: 0,
-				            options: {
-				            },
-				            latitude: lat,
-				            longitude: lon
-				          };
-				          $rootScope.coord_lat=lat;
-				          $rootScope.coord_long=lon;
-				          $scope.$evalAsync();
-				          $scope.$apply();
-				        }					   
-				   }
-				};
-  });
-
-
-
-  $scope.ok = function () {
-    $uibModalInstance.dismiss('cancel');
-    
-  };
-
-}]);
+	};
+	
+	$scope.mapTabSelect = function(){
+	    $rootScope.render=true;
+	}
+});

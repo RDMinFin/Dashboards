@@ -40,6 +40,26 @@ public class CDocumentoDAO {
 		return ret;		
 	}
 	
+	public static boolean deleteDocumento(int id){
+		boolean ret=false;
+		if(CDatabase.connect()){
+			try{
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("DELETE FROM seg_documento "
+						+ "WHERE id =  " + id);
+				if (pstm.executeUpdate()>0)
+					ret=true;
+			}
+			catch(Exception e){
+				CLogger.write("2", CDocumentoDAO.class, e);
+			}
+			finally{
+				CDatabase.close();
+			}
+		}
+		return ret;		
+	}
+	
+	
 	public static Integer numDocumentos(){
 		Integer ret=0;
 		if(CDatabase.connect()){
@@ -50,7 +70,7 @@ public class CDocumentoDAO {
 					ret=rs.getInt(1);
 			}
 			catch(Exception e){
-				CLogger.write("2", CDocumentoDAO.class, e);
+				CLogger.write("3", CDocumentoDAO.class, e);
 			}
 			finally{
 				CDatabase.close();
@@ -73,7 +93,7 @@ public class CDocumentoDAO {
 				}
 			}
 			catch(Exception e){
-				CLogger.write("3", CDocumentoDAO.class, e);
+				CLogger.write("4", CDocumentoDAO.class, e);
 			}
 			finally{
 				CDatabase.close();
@@ -82,11 +102,13 @@ public class CDocumentoDAO {
 		return ret;		
 	}
 
-	public static ArrayList<CDocumento> getDocumentos() {
+	public static ArrayList<CDocumento> getDocumentos(int id) {
 		ArrayList<CDocumento> ret =new ArrayList<CDocumento>();
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select * from seg_documento order by fecha_creacion");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("select * from seg_documento "
+						+ (id>0? "where id_actividad="+id : "" ) 
+						+ " order by fecha_creacion ");
 				ResultSet rs=pstm.executeQuery();
 				while (rs.next()){
 					CDocumento documento = new CDocumento(rs.getInt("id"), rs.getInt("id_actividad"), rs.getString("nombre"), rs.getString("titulo"), 
@@ -95,7 +117,7 @@ public class CDocumentoDAO {
 				}
 			}
 			catch(Exception e){
-				CLogger.write("3", CDocumentoDAO.class, e);
+				CLogger.write("5", CDocumentoDAO.class, e);
 			}
 			finally{
 				CDatabase.close();
@@ -117,7 +139,7 @@ public class CDocumentoDAO {
 				}
 			}
 			catch(Exception e){
-				CLogger.write("4", CDocumentoDAO.class, e);
+				CLogger.write("6", CDocumentoDAO.class, e);
 			}
 			finally{
 				CDatabase.close();

@@ -25,7 +25,34 @@
 			<h4>Documentos</h4>
 		</div>
 	</div>
-	
+	<uib-accordion>
+    <div uib-accordion-group class="panel-info row" heading="Agregar documento">
+		<form name="myForm" class="css-form" novalidate style="margin-top: 15px;">
+			<div class="form-group row">
+		    	Documento:
+		    	<input type="file" ngf-select ng-model="control.docFile" name="file"    
+		             ngf-max-size="100MB" required
+		             ngf-model-invalid="errorFile"
+		             class="form-control"/>
+		    	<i ng-show="myForm.file.$error.required">*obligatorio</i><br>
+		    	<i ng-show="myForm.file.$error.maxSize">Archivo excede el tamaño -
+		          {{errorFile.size / 1000000|number:1}} MB: max 100MB</i>
+			</div>
+			<div class="form-group row" style="text-align:center;">
+				<div class="btn-group" role="group"  >
+		      		<input type="button" value="Remover" class="btn btn-warning"  ng-click="control.docFile = null" ng-show="control.docFile"/>
+		      		<input type="button" value="Agregar" ng-disabled="!myForm.$valid" class="btn btn-success" ng-click="control.uploadFile(control.docFile)"/>
+				</div>	
+			</div>
+			<div class="form-group row" style="text-align:center;">
+		    	<div class="progress" ng-show="control.docFile.progress >= 0">
+		        	<span style="width:{{control.docFile.progress}}%" ng-bind="control.docFile.progress + '%'"></span>
+		      	</div>
+		      	<span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+			</div>
+		  </form>
+	</div>
+	</uib-accordion>
 	<div class="row panel panel-default" style="margin: 10px 0px 20px 0px; height: 500px; position: relative; overflow: auto;">
 		<table st-table="control.documentos" st-safe-src="control.original_documentos" class="table table-striped">
 			<thead>
