@@ -61,7 +61,10 @@ public class SSaveFile extends HttpServlet {
         File uploadedFile=null;
         String place="";
         FileItem fItem=null;
-        Integer id_actividad=-1;        
+        Integer id_actividad=-1; 
+        
+        
+        //Hola 
         
         if (!isMultipart) {
             return;
