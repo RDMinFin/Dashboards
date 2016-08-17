@@ -79,10 +79,10 @@ public class STransparenciaDocumentos extends HttpServlet {
 	    };
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 		String action = map.get("action");
-		
+		int id_actividad = map.get("id")!=null ? Integer.parseInt(map.get("id")):-1;
 		if(action.compareTo("getlist")==0){
 		
-			ArrayList<CDocumento> documentos = CDocumentoDAO.getDocumentos();
+			ArrayList<CDocumento> documentos = CDocumentoDAO.getDocumentos(id_actividad);
 			ArrayList<stdocumento> stdocumentos= new ArrayList<stdocumento>();
 			for(CDocumento documento : documentos){
 				stdocumento temp = new stdocumento();
@@ -99,9 +99,14 @@ public class STransparenciaDocumentos extends HttpServlet {
 			}
 			
 			response_text=new GsonBuilder().serializeNulls().create().toJson(stdocumentos);
-	        response_text = String.join("", "\"documentos\":",response_text);
-	            
+	        response_text = String.join("", "\"documentos\":",response_text);	            
 	        response_text = String.join("", "{\"success\":true,", response_text,"}");
+		}else if (action.compareTo("delete")==0){
+			int iddoc = map.get("iddoc")!=null ? Integer.parseInt(map.get("iddoc")):-1;
+			if (iddoc > 0 && CDocumentoDAO.deleteDocumento(iddoc))
+				response_text = String.join("", "{\"success\":true}");
+			else
+				response_text = String.join("", "{\"success\":false}");
 		}
 		
 		gz.write(response_text.getBytes("UTF-8"));

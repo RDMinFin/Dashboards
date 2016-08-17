@@ -59,8 +59,6 @@ public class SSaveFile extends HttpServlet {
         String fileName="";
         String filePath="";
         File uploadedFile=null;
-        //String titulo="";
-        //String nombre="";
         String place="";
         FileItem fItem=null;
         Integer id_actividad=-1;        
@@ -83,8 +81,6 @@ public class SSaveFile extends HttpServlet {
                     fItem = item;
                 }else{
                 	switch(item.getFieldName()){
-                	//case "titulo" : titulo = item.getString(); break;
-                	//case "nombre" : nombre = item.getString(); break;
                 	case "id_actividad" : id_actividad = Integer.parseInt(item.getString());
                 	case "place" : place = item.getString(); break;
                 	}
