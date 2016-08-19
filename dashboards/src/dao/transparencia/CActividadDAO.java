@@ -169,7 +169,7 @@ public class CActividadDAO {
 		ArrayList<CActividad> ret = new ArrayList<CActividad>();
 		if(CDatabase.connect()){
 			try{
-				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_actividad where programa=94 and subprograma=2 ORDER BY fecha_inicio ");
+				PreparedStatement pstm =  CDatabase.getConnection().prepareStatement("SELECT * FROM seg_actividad where programa=94 and subprograma=2 ORDER BY id ");
 				ResultSet rs = pstm.executeQuery();
 				while(rs.next()){
 					CActividad actividad = new CActividad(rs.getInt("id"), rs.getString("nombre"), 
