@@ -38,8 +38,8 @@ public class CActividadDAO {
 					if (rs != null && rs.next()) {
 					    idResponsable = rs.getLong(1);								
 						pstm =  CDatabase.getConnection().prepareStatement("INSERT INTO "
-								+"seg_actividad(nombre,descripcion,fecha_inicio,fecha_fin,porcentaje_ejecucion,coord_lat,coord_long,entidades,id_responsable,programa,subprgrama,usuario_creacion,fecha_creacion) "
-								+"VALUES (?,?,?,?,?,?,?,?,?,?,?) ");
+								+"seg_actividad(nombre,descripcion,fecha_inicio,fecha_fin,porcentaje_ejecucion,coord_lat,coord_long,entidades,id_responsable,programa,subprograma,usuario_creacion,fecha_creacion) "
+								+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ");
 						pstm.setString(1, actividad.getNombre());
 						pstm.setString(2, actividad.getDescripcion());
 						pstm.setTimestamp(3, actividad.getFecha_inicio());
