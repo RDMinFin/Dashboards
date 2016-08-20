@@ -61,11 +61,22 @@
 					<td ng-click="go('/transparencia/jerez/documentos')">
 						<div class="bwindow_title">Documentos</div>
 						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
-							<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp=jerez&idevento=-1&pic=b4.png&pic_w=300" alt="Actividades" class="img-rounded"></div>
+							<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp=jerez&idevento=-1&pic=b4.png&pic_w=300" alt="Documentos" class="img-rounded"></div>
 							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
 								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.num_documentos }} documentos</button>
 	  						</div>
 						</div>
+					</td>
+				</tr>
+				<tr>
+					<td ng-click="go('/transparencia/jerez/compras')">
+						<div class="bwindow_title">Compras</div>
+						<div class="panel panel-default bwindow" style="position: relative; width: 300px; height: 200px; overflow: hidden;">
+							<div style="position: absolute; float: left; width: 100%; overflow: hidden;"><img src="/SPicture?subp=jerez&idevento=-1&pic=b4.png&pic_w=300" alt="Compras" class="img-rounded"></div>
+							<div style="position: absolute; width:299px; bottom: 0px;" class="btn-group">
+								<button type="button" class="btn btn-default" style="width: 100%; height: 40px;">{{ control.num_compras }} Compras</button>
+	  						</div>
+						</div>						
 					</td>
 				</tr>
 			</table>
