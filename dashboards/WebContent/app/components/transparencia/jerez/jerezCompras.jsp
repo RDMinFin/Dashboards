@@ -10,7 +10,7 @@
 		</div>
 	</div>
 	
-	<div class="row panel panel-default" style="margin: 10px 0px 20px 0px; height: 500px; position: relative; overflow: auto;">
+	<div class="row panel panel-default" style="margin: 10px 0px 20px 0px; height: 600px; position: relative; overflow: auto;">
 		<table st-table="control.compras" st-safe-src="control.original_compras" class="table table-striped">
 			<thead>
 				<tr>
