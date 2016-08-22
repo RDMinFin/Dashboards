@@ -13,5 +13,16 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/gson-2.3.1.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/joda-time-2.4.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/shiro-all-1.2.4.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/mysql-connector-java-5.1.38-bin.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/poi-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/poi-ooxml-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/poi-ooxml-schemas-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/imgscalr-lib-4.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/commons-fileupload-1.3.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Rederz/Workspace/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

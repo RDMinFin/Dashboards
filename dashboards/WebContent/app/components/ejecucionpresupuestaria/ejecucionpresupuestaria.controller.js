@@ -17,7 +17,7 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 			this.selectedRow = null;
 			this.row_selected = [];
 			this.loadAttempted = false;
-			this.level=1; //1 Entidades, 2 Unidad Ejecutora, 3 Renglon
+			this.level=1; // 1 Entidades, 2 Unidad Ejecutora, 3 Renglon
 			this.month=1;
 			this.entidad = 0;
 			this.unidad_ejecutora = 0;
@@ -323,7 +323,8 @@ angular.module('ejecucionpresupuestariaController',['dashboards']).controller('e
 					    	  $scope.gridApi.colMovable.on.columnPositionChanged($scope, this.saveState);
 						      $scope.gridApi.colResizable.on.columnSizeChanged($scope, this.saveState);
 						      $scope.gridApi.core.on.columnVisibilityChanged($scope, this.saveState);
-						      //$scope.gridApi.core.on.filterChanged($scope, this.saveState);
+						      // $scope.gridApi.core.on.filterChanged($scope,
+								// this.saveState);
 						      $scope.gridApi.core.on.sortChanged($scope, this.saveState);
 						  }.bind(this));
 				      }
