@@ -1,4 +1,4 @@
-angular.module('jerezAdminController',['dashboards','smart-table','ngFileUpload','ui.bootstrap',]);
+angular.module('jerezAdminController',['dashboards','smart-table','ngFileUpload','ui.bootstrap']);
 angular.module('jerezAdminController').controller('adminCtrl', function($log,$scope,$rootScope,$routeParams,$http,$uibModal,$route){
 	
     this.showloading = false;  
@@ -268,7 +268,6 @@ angular.module('jerezAdminController')
 		 maps.setCenter(center);
 		 maps.setZoom(15);
 		 google.maps.event.trigger(maps,'resize');
-		 $log.info("YAAAAAAAAAAAAAAAaaa");
      })
      
 
