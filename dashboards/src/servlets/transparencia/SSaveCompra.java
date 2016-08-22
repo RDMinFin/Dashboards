@@ -26,7 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import dao.transparencia.CActividadDAO;
 import dao.transparencia.CComprasDAO;
 import pojo.transparencia.CActividad;
-import pojo.transparencia.CCompra;
+import pojo.transparencia.CCompras;
 import pojo.transparencia.CDocumento;
 import pojo.transparencia.CResponsable;
 import servlets.transparencia.SSaveActividad.stactividad;
@@ -80,7 +80,7 @@ public class SSaveCompra extends HttpServlet {
 
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 
-		CCompra compra = null;
+		CCompras compra = null;
 
 		Integer id = Integer.parseInt(map.get("id"));
 		Integer nog = Integer.parseInt(map.get("nog"));
@@ -91,7 +91,7 @@ public class SSaveCompra extends HttpServlet {
 		String usuario = CShiro.getAttribute("username").toString();
 		Timestamp fecha = new Timestamp(DateTime.now().getMillis());
 
-		compra = new CCompra(id, nog, npg, programa, subprograma, usuario, fecha);
+		compra = new CCompras(id, nog, npg, programa, subprograma, usuario, fecha);
 
 		switch (map.get("action")) {
 		case "create":
@@ -118,7 +118,7 @@ public class SSaveCompra extends HttpServlet {
 
 			break;
 		default:
-			List<CCompra> actividades = CComprasDAO.getActividades();
+			List<CCompras> actividades = CComprasDAO.getActividades();
 			for (CActividad actividad : actividades) {
 				stactividad temp = new stactividad();
 				temp.latitude = actividad.getCoord_lat();
