@@ -19,6 +19,12 @@ public class CDatabase {
 	private static String schema;
 	private static String schema_des;
 
+	private static Connection connection_oracle;
+	private static String host_oracle;
+	private static Integer port_oracle;
+	private static String user_oracle;
+	private static String password_oracle;
+	private static String schema_oracle;
 	
 	static {
 		host = CProperties.getmemsql_host();
@@ -27,6 +33,12 @@ public class CDatabase {
 		password = CProperties.getmemsql_password();
 		schema = CProperties.getmemsql_schema();
 		schema_des = CProperties.getmemsql_schema_des();
+		
+		host_oracle = CProperties.getOracle_host();
+		port_oracle = CProperties.getOracle_port();
+		user_oracle = CProperties.getOracle_user();
+		password_oracle = CProperties.getOracle_password();
+		schema_oracle = CProperties.getOracle_schema();
 	}
 	
 	public static boolean connect(){
@@ -53,6 +65,18 @@ public class CDatabase {
 		return false;
 	}
 	
+	public static boolean connectOracle(){
+		try{
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			connection_oracle = DriverManager.getConnection(String.join("", "jdbc:oracle:thin:@//",String.valueOf(host_oracle),":", String.valueOf(port_oracle),"/",schema_oracle), user_oracle, password_oracle);
+			return !connection_oracle.isClosed();
+		}
+		catch(Exception e){
+			CLogger.write("3", CDatabase.class, e);
+		}
+		return false;
+	}
+	
 	public static Connection getConnection(){
 		return connection;
 	}
@@ -61,11 +85,15 @@ public class CDatabase {
 		return connection_des;
 	}
 	
+	public static Connection getConnection_Oracle(){
+		return connection_oracle;
+	}
+	
 	public static void close(){
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			CLogger.write("3", CDatabase.class, e);
+			CLogger.write("4", CDatabase.class, e);
 		}
 	}
 	
@@ -73,7 +101,15 @@ public class CDatabase {
 		try {
 			connection_des.close();
 		} catch (SQLException e) {
-			CLogger.write("4", CDatabase.class, e);
+			CLogger.write("5", CDatabase.class, e);
+		}
+	}
+	
+	public static void close_oracle(){
+		try {
+			connection_oracle.close();
+		} catch (SQLException e) {
+			CLogger.write("6", CDatabase.class, e);
 		}
 	}
 	
@@ -81,7 +117,7 @@ public class CDatabase {
 		try {
 			conn.close();
 		} catch (SQLException e) {
-			CLogger.write("5", CDatabase.class, e);
+			CLogger.write("7", CDatabase.class, e);
 		}
 	}
 }
