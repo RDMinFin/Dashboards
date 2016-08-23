@@ -10,12 +10,12 @@ import org.joda.time.DateTime;
 
 import db.utilities.CDatabase;
 import pojo.transparencia.CActividad;
-import pojo.transparencia.CCompras;
+import pojo.transparencia.CGuateCompra;
 import utilities.CLogger;
 
-public class CComprasDAO {
+public class CGuateCompraDAO {
 
-	public static boolean crearCompra(CCompras compra) {
+	public static boolean crearCompra(CGuateCompra compra) {
 		boolean ret = false;
 		if (CDatabase.connect()) {
 			try {
@@ -38,7 +38,7 @@ public class CComprasDAO {
 				if (pstm.executeUpdate() > 0)
 					ret = true;
 			} catch (Exception e) {
-				CLogger.write("1", CComprasDAO.class, e);
+				CLogger.write("1", CGuateCompraDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}
@@ -46,7 +46,7 @@ public class CComprasDAO {
 		return ret;
 	}
 
-	public static boolean actualizarCompra(CCompras compra) {
+	public static boolean actualizarCompra(CGuateCompra compra) {
 		boolean ret = false;
 		if (CDatabase.connect()) {
 			try {
@@ -80,7 +80,7 @@ public class CComprasDAO {
 				if (pstm.executeUpdate() > 0)
 					ret = ret & true;
 			} catch (Exception e) {
-				CLogger.write("2", CComprasDAO.class, e);
+				CLogger.write("2", CGuateCompraDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}
@@ -97,7 +97,7 @@ public class CComprasDAO {
 				if (pstm.executeUpdate() > 0)
 					ret = true;
 			} catch (Exception e) {
-				CLogger.write("2", CComprasDAO.class, e);
+				CLogger.write("2", CGuateCompraDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}
@@ -115,7 +115,7 @@ public class CComprasDAO {
 				if (rs.next())
 					ret = rs.getInt(1);
 			} catch (Exception e) {
-				CLogger.write("3", CComprasDAO.class, e);
+				CLogger.write("3", CGuateCompraDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}
@@ -123,8 +123,8 @@ public class CComprasDAO {
 		return ret;
 	}
 
-	public static List<CCompras> getCompras() {
-		List<CCompras> ret = new ArrayList<CCompras>();
+	public static List<CGuateCompra> getCompras() {
+		List<CGuateCompra> ret = new ArrayList<CGuateCompra>();
 		if (CDatabase.connect()) {
 			try {
 				PreparedStatement pstm = CDatabase.getConnection().prepareStatement("select * from seg_documento "
@@ -137,7 +137,7 @@ public class CComprasDAO {
 					ret.add(documento);
 				}
 			} catch (Exception e) {
-				CLogger.write("5", CComprasDAO.class, e);
+				CLogger.write("5", CGuateCompraDAO.class, e);
 			} finally {
 				CDatabase.close();
 			}

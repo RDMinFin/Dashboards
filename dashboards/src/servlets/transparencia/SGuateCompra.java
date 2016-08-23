@@ -24,9 +24,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import dao.transparencia.CActividadDAO;
-import dao.transparencia.CComprasDAO;
+import dao.transparencia.CGuateCompraDAO;
 import pojo.transparencia.CActividad;
-import pojo.transparencia.CCompras;
+import pojo.transparencia.CGuateCompra;
 import pojo.transparencia.CDocumento;
 import pojo.transparencia.CResponsable;
 import servlets.transparencia.SSaveActividad.stactividad;
@@ -37,13 +37,13 @@ import utilities.CDate;
  * Servlet implementation class SSaveCompra
  */
 @WebServlet("/SSaveCompra")
-public class SSaveCompra extends HttpServlet {
+public class SGuateCompra extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public SSaveCompra() {
+	public SGuateCompra() {
 		super();
 	}
 
@@ -67,8 +67,11 @@ public class SSaveCompra extends HttpServlet {
 		String response_text = "";
 
 		Gson gson = new Gson();
+		
 		Type type = new TypeToken<Map<String, String>>() {
+			
 		}.getType();
+		
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = request.getReader();
 
@@ -80,7 +83,7 @@ public class SSaveCompra extends HttpServlet {
 
 		Map<String, String> map = gson.fromJson(sb.toString(), type);
 
-		CCompras compra = null;
+		CGuateCompra compra = null;
 
 		Integer id = Integer.parseInt(map.get("id"));
 		Integer nog = Integer.parseInt(map.get("nog"));
@@ -91,18 +94,17 @@ public class SSaveCompra extends HttpServlet {
 		String usuario = CShiro.getAttribute("username").toString();
 		Timestamp fecha = new Timestamp(DateTime.now().getMillis());
 
-		compra = new CCompras(id, nog, npg, programa, subprograma, usuario, fecha);
+		compra = new CGuateCompra(id, nog, npg, programa, subprograma, usuario, fecha);
 
 		switch (map.get("action")) {
 		case "create":
-			CComprasDAO.crearCompra(compra);
+			CGuateCompraDAO.crearCompra(compra);
 			response_text = String.join("", "{\"success\":true, \"result\":\"creada\"}");
-
 			break;
 
 		case "update":
 			if (id > 0) {
-				CComprasDAO.actualizarCompra(compra);
+				CGuateCompraDAO.actualizarCompra(compra);
 				response_text = String.join("", "{\"success\":true, \"result\":\"actualizada\"}");
 			} else
 				response_text = String.join("", "{\"success\":false, \"result\":\"NO actualizada\"}");
@@ -111,54 +113,17 @@ public class SSaveCompra extends HttpServlet {
 
 		case "delete":
 			if (id > 0) {
-				CComprasDAO.deleteCompra(id);
+				CGuateCompraDAO.deleteCompra(id);
 				response_text = String.join("", "{\"success\":true, \"result\":\"eliminada\"}");
 			} else
 				response_text = String.join("", "{\"success\":false, \"result\":\"NO eliminada\"}");
 
 			break;
 		default:
-			List<CCompras> actividades = CComprasDAO.getActividades();
-			for (CActividad actividad : actividades) {
-				stactividad temp = new stactividad();
-				temp.latitude = actividad.getCoord_lat();
-				temp.longitude = actividad.getCoord_long();
-				temp.descripcion = actividad.getDescripcion();
-				temp.entidades = actividad.getEntidades();
-				temp.fecha_fin = CDate.formatTimestamp(actividad.getFecha_fin());
-				temp.fecha_inicio = CDate.formatTimestamp(actividad.getFecha_inicio());
-				temp.id = actividad.getId();
-				temp.nombre = actividad.getNombre();
-				temp.responsable_id = (actividad.getResponsable() != null) ? actividad.getResponsable().getId() : -1;
-				temp.responsable_correo = (actividad.getResponsable() != null) ? actividad.getResponsable().getCorreo()
-						: null;
-				temp.responsable_nombre = (actividad.getResponsable() != null) ? actividad.getResponsable().getNombre()
-						: null;
-				temp.responsable_telefono = (actividad.getResponsable() != null)
-						? actividad.getResponsable().getTelefono() : null;
-				temp.porcentaje_ejecucion = actividad.getPorcentaje_ejecucion();
-				ArrayList<String> fotos = new ArrayList<String>();
-				for (CDocumento doc : actividad.getDocumentos()) {
-					if (doc.getTipo() == 1)
-						fotos.add(doc.getNombre());
-				}
-				if (fotos.size() > 0) {
-					temp.fotos = new String[fotos.size()];
-					temp.fotos = fotos.toArray(temp.fotos);
-				}
-				temp.entidad = (actividad.getEstructura() != null) ? actividad.getEstructura().getEntidad() : null;
-				temp.unidad_ejecutora = (actividad.getEstructura() != null)
-						? actividad.getEstructura().getUnidad_ejecutora() : null;
-				temp.programa = (actividad.getEstructura() != null) ? actividad.getEstructura().getPrograma() : null;
-				temp.subprograma = (actividad.getEstructura() != null) ? actividad.getEstructura().getSubprograma()
-						: null;
-				temp.proyecto = (actividad.getEstructura() != null) ? actividad.getEstructura().getProyecto() : null;
-				temp.actividad = (actividad.getEstructura() != null) ? actividad.getEstructura().getActividad() : null;
-				temp.obra = (actividad.getEstructura() != null) ? actividad.getEstructura().getObra() : null;
+			List<CGuateCompra> numsCompra = CGuateCompraDAO.getCompras();
 
-			}
-			response_text = new GsonBuilder().serializeNulls().create().toJson(stactividades);
-			response_text = String.join("", "\"actividades\":", response_text);
+			response_text = new GsonBuilder().serializeNulls().create().toJson(numsCompra);
+			response_text = String.join("", "\"compras\":", response_text);
 
 			response_text = String.join("", "{\"success\":true,", response_text, "}");
 			break;
@@ -169,19 +134,7 @@ public class SSaveCompra extends HttpServlet {
 		output.close();
 	}
 
-	private void saveCompra() {
-
-	}
-
-	private void updateCompra() {
-
-	}
-
-	private void deleteCompra() {
-
-	}
-
-	private void getCompras() {
+	private CGuateCompra setCompra(Map<String,String>) {
 
 	}
 }

@@ -2,7 +2,7 @@ package pojo.transparencia;
 
 import java.sql.Timestamp;
 
-public class CCompras {
+public class CGuateCompra {
 	private Integer id;
 	private Integer nog;
 	private String npg;
@@ -11,11 +11,11 @@ public class CCompras {
 	private String usuario;
 	private Timestamp fecha;
 
-	public CCompras() {
+	public CGuateCompra() {
 
 	}
 
-	public CCompras(Integer id, Integer nog, String npg, Integer programa, Integer subprograma, String usuario,
+	public CGuateCompra(Integer id, Integer nog, String npg, Integer programa, Integer subprograma, String usuario,
 			Timestamp fecha) {
 		this.id = id;
 		this.nog = nog;
