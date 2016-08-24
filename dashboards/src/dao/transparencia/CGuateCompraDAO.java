@@ -23,17 +23,20 @@ public class CGuateCompraDAO {
 						.prepareStatement("INSERT INTO seg_compras (nog,npg,programa,subprograma,usuario_ing,fecha_ing)"
 								+ "values (?,?,?,?,?,?)");
 
-				if (compra.getNog().lo > 0)
-					pstm.setInt(1, documento.getId_actividad());
-				else
+				if (compra.getNog() == null || compra.getNog().intValue() == 0)
 					pstm.setNull(1, java.sql.Types.INTEGER);
+				else
+					pstm.setInt(1, compra.getNog().intValue());
 
-				pstm.setString(2, documento.getNombre());
-				pstm.setString(3, documento.getTitulo());
-				pstm.setString(4, documento.getRuta());
-				pstm.setInt(5, documento.getTipo());
-				pstm.setString(6, documento.getUsuario_creacion());
-				pstm.setTimestamp(7, documento.getFecha_creacion());
+				if (compra.getNpg() == null || compra.getNpg().isEmpty())
+					pstm.setNull(2, java.sql.Types.VARCHAR);
+				else
+					pstm.setString(2, compra.getNpg());
+
+				pstm.setInt(3, compra.getPrograma().intValue());
+				pstm.setInt(4, compra.getSubprograma().intValue());
+				pstm.setString(5, compra.getUsuario());
+				pstm.setTimestamp(6, compra.getFecha());
 
 				if (pstm.executeUpdate() > 0)
 					ret = true;
