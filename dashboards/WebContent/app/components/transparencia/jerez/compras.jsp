@@ -11,18 +11,20 @@
 			heading="Agregar proceso de compra">
 			<form name="myForm" class="css-form" novalidate style="margin-top: 15px;">
 				<div class="form-group row" style="text-align: center;">
-					<label class="radio-inline"><input type="radio" ng-model="tipoCompra" ng-required="!tipoCompra" value="NOG"/>NOG</label>
-					<label class="radio-inline"><input type="radio" ng-model="tipoCompra" ng-required="!tipoCompra" value="NPG"/>NPG</label>
+					<label class="radio-inline"><input type="radio" ng-model="tipoCompra" ng-required="!tipoCompra" value="NOG" ng-change="clearError()" />NOG</label>
+					<label class="radio-inline"><input type="radio" ng-model="tipoCompra" ng-required="!tipoCompra" value="NPG" ng-change="clearError()" />NPG</label>
 				</div>
 				<div class="form-group row" style="text-align: center;">
-					<input type="text" ng-model="idCompra" required	/>
+					<input type="text" ng-model="idCompra" ng-change="clearError()" required	/>
 				</div>
 				<div class="form-group row" style="text-align: center;">
 					<div class="btn-group" role="group">
 						<input type="button" value="Agregar" ng-disabled="!myForm.$valid" class="btn btn-success" ng-click="addCompra()" />
 					</div>
 				</div>
-
+				<div class="row" style="text-align: center; color: red;" ng-show="error">
+					<i><span class="glyphicon glyphicon-exclamation-sign">{{errorMessage}}</span> </i>
+				</div>
 			</form>
 		</div>
 	</div>
