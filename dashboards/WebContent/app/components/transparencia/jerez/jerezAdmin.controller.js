@@ -72,11 +72,29 @@ angular.module('jerezAdminController').controller('adminCtrl', function($log,$sc
 		    	
 		    });
 	 };	 
+	 
+	 this.addCompras = function () {
+	    	$rootScope.id = -1;
+			 var modalInstance = $uibModal.open({
+			      animation: true,
+			      keyboard:false,
+			      backdrop:'static',
+			      scope:$scope,
+			      templateUrl: 'editCompras.html',
+			      controller: 'editCompras',
+			 });
+			 
+			 modalInstance.result.then(function () {
+				 $route.reload();
+			    }, function () {
+			    	
+			    });
+		 };	 
 });
 
 
 angular.module('jerezAdminController')
-.controller('editActivity', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload,$timeout) {
+.controller('editActivity', function ($log, $scope, $rootScope,  $http, $window,  $uibModalInstance,  $timeout,  uiGmapGoogleMapApi,uiGmapIsReady,Upload) {
 	if ($rootScope.id<=0){
 		$rootScope.id=-1; 
 		$rootScope.nombre="";
@@ -280,4 +298,49 @@ angular.module('jerezAdminController')
 	$scope.mapTabSelect = function(){
 	    $rootScope.render=true;
 	}
+});
+
+angular.module('jerezAdminController')
+.controller('editCompras', function ($log, $scope, $http, $window,  $uibModalInstance,  $timeout) {
+	
+	$scope.tipoCompra;
+	$scope.idCompra;
+	
+	$scope.cancel = function () {
+	    $uibModalInstance.dismiss('cancel');
+	};
+	
+	$http.post('/STransparenciaCompras', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
+	    if(response.data.success){
+	    	$scope.original_compras = response.data.compras;
+	    	$scope.compras = $scope.original_compras.length> 0 ? $scope.original_compras.slice(0) : [];
+	    }
+ 	}.bind($scope), function errorCallback(response){
+ 		
+ 	}
+	);
+	
+	$scope.addCompra=function(){
+		$http.post('/STransparenciaCompras', { action: 'add', tipoCompra:this.tipoCompra, idCompra:this.idCompra, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+		    	
+		    }
+	 	}.bind($scope), function errorCallback(response){
+	 		
+	 	}
+		);
+		
+	};
+	
+	$scope.deleteCompra=function(tipo,id){
+		$http.post('/STransparenciaCompras', { action: 'delete', tipoCompra:tipo, idCompra:id, t: (new Date()).getTime() }).then(function(response){
+		    if(response.data.success){
+
+		    }
+	 	}.bind($scope), function errorCallback(response){
+	 		
+	 	}
+		);
+	};
+	
 });

@@ -14,9 +14,12 @@ public class CCompra {
 	String nit;
 	String nombre;
 	double monto;
+	Integer programa;
+	Integer subprograma;
+	String usuario;
 	
-	public CCompra(String entidad, String unidad, String tipo, String id, Timestamp fecha, String descripcion, String modalidad,
-			String estado, String nit, String nombre, double monto) {
+	public CCompra(String entidad, String unidad, String tipo, String id, Timestamp fecha, String descripcion,
+			String modalidad, String estado, String nit, String nombre, double monto) {
 		super();
 		this.entidad = entidad;
 		this.unidad = unidad;
@@ -29,6 +32,38 @@ public class CCompra {
 		this.nit = nit;
 		this.nombre = nombre;
 		this.monto = monto;
+	}
+
+	public CCompra(String tipo, String id, Integer programa, Integer subprograma, String Usuario){
+		this.tipo = tipo;
+		this.id = id;
+		this.programa = programa;
+		this.subprograma = subprograma;
+		this.usuario = Usuario;
+	}
+	
+	public Integer getPrograma() {
+		return programa;
+	}
+
+	public void setPrograma(Integer programa) {
+		this.programa = programa;
+	}
+
+	public Integer getSubprograma() {
+		return subprograma;
+	}
+
+	public void setSubprograma(Integer subprograma) {
+		this.subprograma = subprograma;
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 
 	public String getTipo() {
