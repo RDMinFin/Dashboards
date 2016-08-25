@@ -306,6 +306,11 @@ angular.module('jerezAdminController')
 	$scope.tipoCompra;
 	$scope.idCompra;
 	
+	$scope.clearError=function(){
+		$scope.error = false;
+		$scope.errorMessage="";
+	}
+	
 	$scope.cancel = function () {
 	    $uibModalInstance.dismiss('cancel');
 	};
@@ -333,16 +338,38 @@ angular.module('jerezAdminController')
 	}
 	
 	$scope.addCompra=function(){
-		$http.post('/STransparenciaCompras', { action: 'add', tipoCompra:this.tipoCompra, idCompra:this.idCompra, t: (new Date()).getTime() }).then(function(response){
-		    if(response.data.success){
-		    	this.getCompra();
-		    	this.tipoCompra=null;
-		    	this.idCompra=null;
-		    }
-	 	}.bind($scope), function errorCallback(response){
-	 		
-	 	}
-		);
+		isValid = false;
+		if (this.tipoCompra=="NOG"){
+			if( !isNaN(parseFloat(this.idCompra)) && isFinite(this.idCompra) )
+				isValid=true;
+			else{
+				isValid=false;
+				$scope.error=true;
+				$scope.errorMessage=" Formato invalido para NOG";
+			}
+		}
+		
+		for (i=0; i<=$scope.compras.length; i++ ){
+			isValid=true;
+			if ($scope.compras[i].id == this.idCompra){
+				isValid=false;
+				$scope.error=true;
+				$scope.errorMessage=" Proceso de compra ya existe";
+				i=$scope.compras.length;
+			}
+		}
+		
+		if (isValid){
+			$http.post('/STransparenciaCompras', { action: 'add', tipoCompra:this.tipoCompra, idCompra:this.idCompra, t: (new Date()).getTime() }).then(function(response){
+			    if(response.data.success){
+			    	this.getCompra();
+			    	this.tipoCompra=null;
+			    	this.idCompra=null;
+			    }
+		 	}.bind($scope), function errorCallback(response){
+		 	}
+			);
+		}
 		
 	};
 	
