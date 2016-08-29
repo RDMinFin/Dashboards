@@ -10,6 +10,7 @@ angular.module('jerezDocumentosController',['dashboards','smart-table','ngFileUp
 	this.documentos=[];
 	this.original_documentos=[];
 	this.docFile = null;
+	this.showloading=true;
 	
 	$http.post('/SLastupdate', { dashboard: 'ejecucionpresupuestaria', t: (new Date()).getTime() }).then(function(response){
 		    if(response.data.success){
@@ -22,9 +23,10 @@ angular.module('jerezDocumentosController',['dashboards','smart-table','ngFileUp
 	    if(response.data.success){
 	    	this.original_documentos = response.data.documentos;
 	    	this.documentos = this.original_documentos.length> 0 ? this.original_documentos.slice(0) : [];
+	    	this.showloading=false;
 	    }
  	}.bind(this), function errorCallback(response){
- 		
+    	this.showloading=false;
  	}
 	);
 	

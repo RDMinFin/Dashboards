@@ -22,8 +22,8 @@
 						<input type="button" value="Agregar" ng-disabled="!myForm.$valid" class="btn btn-success" ng-click="addCompra()" />
 					</div>
 				</div>
-				<div class="row" style="text-align: center; color: red;" ng-show="error">
-					<i><span class="glyphicon glyphicon-exclamation-sign">{{errorMessage}}</span> </i>
+				<div class="row" style="font-size:16px; text-align: center; color: red;" ng-show="error">
+					<label><span class="glyphicon glyphicon-exclamation-sign">{{errorMessage}}</span> </label>
 				</div>
 			</form>
 		</div>
@@ -55,6 +55,14 @@
 				</tr>
 			</tbody>
 		</table>
+		<div class="grid_loading" ng-hide="!showloading">
+ 			<div class="msg">
+     			<span><i class="fa fa-spinner fa-spin fa-4x"></i>
+	  			<br /><br />
+	  			<b>Cargando, por favor espere...</b>
+  				</span>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="modal-footer">

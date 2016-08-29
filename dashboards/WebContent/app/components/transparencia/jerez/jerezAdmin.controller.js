@@ -305,6 +305,7 @@ angular.module('jerezAdminController')
 	
 	$scope.tipoCompra;
 	$scope.idCompra;
+	$scope.showloading=true;
 	
 	$scope.clearError=function(){
 		$scope.error = false;
@@ -319,20 +320,23 @@ angular.module('jerezAdminController')
 	    if(response.data.success){
 	    	$scope.original_compras = response.data.compras;
 	    	$scope.compras = $scope.original_compras.length> 0 ? $scope.original_compras.slice(0) : [];
+	    	$scope.showloading=false;
 	    }
  	}.bind($scope), function errorCallback(response){
- 		
+    	$scope.showloading=false;
  	}
 	);
 	
 	$scope.getCompra=function(){
+    	$scope.showloading=true;
 		$http.post('/STransparenciaCompras', { action: 'getlist', t: (new Date()).getTime() }).then(function(response){
 		    if(response.data.success){
 		    	$scope.original_compras = response.data.compras;
 		    	$scope.compras = $scope.original_compras.length> 0 ? $scope.original_compras.slice(0) : [];
+		    	$scope.showloading=false;
 		    }
 	 	}.bind($scope), function errorCallback(response){
-	 		
+	    	$scope.showloading=false;
 	 	}
 		);
 	}
